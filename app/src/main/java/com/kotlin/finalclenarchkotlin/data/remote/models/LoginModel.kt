@@ -8,11 +8,10 @@ data class GetResponseJackJill(
     @SerializedName("hello")
     val hello: String?
 )
-
 data class LoginReqModel(
     @Expose
     @SerializedName("username")
-    val username: String? ,
+    val username: String?,
     @Expose
     @SerializedName("password")
     val password: String?
@@ -20,7 +19,7 @@ data class LoginReqModel(
 data class LoginRespModel(
     @Expose
     @SerializedName("token")
-    val token: String? ,
+    val token: String?,
     @Expose
     @SerializedName("adminName")
     val adminName: String?

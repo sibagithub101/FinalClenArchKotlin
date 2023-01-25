@@ -8,9 +8,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface LoginRepo {
     suspend fun loginJakJillApi(): Flow<ApiResult<GetResponseJackJill>>
-
     suspend fun loginApiCall(loginRequest: LoginReqModel, url: String) : Flow<ApiResult<LoginRespModel>>
-
-
-
 }

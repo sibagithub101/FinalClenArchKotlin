@@ -13,7 +13,6 @@ class LoginUseCase @Inject constructor(private val repository:LoginRepo) {
     suspend fun invoke2(): Flow<ApiResult<GetResponseJackJill>> {
         return repository.loginJakJillApi()
     }
-
     suspend fun invoke(loginReqModel: LoginReqModel, url: String): Flow<ApiResult<LoginRespModel>> {
         return repository.loginApiCall(loginReqModel, url)
     }

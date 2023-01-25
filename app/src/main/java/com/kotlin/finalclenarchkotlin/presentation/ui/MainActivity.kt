@@ -1,11 +1,10 @@
-package com.kotlin.finalclenarchkotlin
+package com.kotlin.finalclenarchkotlin.presentation.ui
 
 import android.app.ProgressDialog
 import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Base64
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
@@ -19,10 +18,11 @@ import com.kotlin.finalclenarchkotlin.presentation.viewModels.ValidationState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding:ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
     private  lateinit var progressDialog:ProgressDialog
     private var userName = ""
     private var password = ""
@@ -33,15 +33,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         progressDialog = ProgressDialog(this)
-        observe()
+
+        apiObserve()
+        validationObserver()
 
         binding.btnLogin.setOnClickListener {
-
             loginViewModel.setEmailAndPassword(binding.etUSerName,binding.etPassword)
         }
     }
 
-    private fun observe(){
+    private fun apiObserve(){
         loginViewModel.mState
             .flowWithLifecycle(lifecycle,  Lifecycle.State.STARTED)
             .onEach { state -> handleStateChange(state) }
@@ -51,8 +52,6 @@ class MainActivity : AppCompatActivity() {
             .flowWithLifecycle(lifecycle,Lifecycle.State.STARTED)
             .onEach { state2 -> handleLoginApiCall(state2) }
             .launchIn(lifecycleScope)
-
-        validationObserver()
     }
 
     private fun validationObserver() {
@@ -80,12 +79,12 @@ class MainActivity : AppCompatActivity() {
                 progressDialog.setCancelable(false)
                 progressDialog.show()
             }
-            is LoginActivityState.SuccessLogin ->{
+            is LoginActivityState.SuccessLogin -> {
                 progressDialog.dismiss()
                 val admin = state2.loginEntity.adminName
                 val token = state2.loginEntity.token
-                Log.e(TAG, "getSuccessLoginApi: $admin + $token")
-                Toast.makeText(this,"SuccessFull Login",Toast.LENGTH_SHORT).show()
+                Timber.tag(TAG).e("getSuccessLoginApi: " + admin + " + " + token)
+                Toast.makeText(this, "SuccessFull Login", Toast.LENGTH_SHORT).show()
 
             }
             is LoginActivityState.Failure ->{
@@ -106,14 +105,14 @@ class MainActivity : AppCompatActivity() {
                  progressDialog.setCancelable(false)
                  progressDialog.show()
              }
-              is LoginActivityState.SuccessJackJill ->{
+              is LoginActivityState.SuccessJackJill -> {
                   progressDialog.dismiss()
                   val hello = state.loginJakjIll.hello
-                  Log.e(TAG, "getSuccessJackJill: $hello")
+                  Timber.tag(TAG).e("getSuccessJackJill: %s", hello)
                   val getEncodeData = hello.toString()
                   val data: ByteArray = Base64.decode(getEncodeData, Base64.DEFAULT)
                   val base64Decode = String(data, Charsets.UTF_8)
-                  loginViewModel.loginAPiCall(LoginReqModel(userName,password),base64Decode)
+                  loginViewModel.loginAPiCall(LoginReqModel(userName, password), base64Decode)
 
               }
              is LoginActivityState.Failure ->{
